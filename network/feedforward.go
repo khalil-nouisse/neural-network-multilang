@@ -1,7 +1,7 @@
 package network
 
 // Feedforward runs the forward pass of the neural network and returns the output activations.
-func (nn *NeuralNetwork) Feedforward(inputs []float64) []float64 {
+func (nn *NeuralNetwork) Feedforward(inputs []float64) ([]float64, []float64) {
 
 	// Input → Hidden: dot product + bias + sigmoid
 	rawHidden := dotProduct(inputs, nn.WeightsInputHidden)
@@ -21,5 +21,5 @@ func (nn *NeuralNetwork) Feedforward(inputs []float64) []float64 {
 		activatedOutput[i] = sigmoid(a)
 	}
 
-	return activatedOutput
+	return activatedHidden, activatedOutput
 }
