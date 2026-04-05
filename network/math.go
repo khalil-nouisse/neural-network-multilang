@@ -26,6 +26,9 @@ func dotProduct(inputs []float64, weights [][]float64) []float64 {
 	return result
 }
 
+// Activation Functions
+
+// 1- Sigmoid
 func sigmoid(x float64) float64 {
 	return 1.0 / (1 + math.Exp(-x))
 }
@@ -33,6 +36,20 @@ func sigmoid(x float64) float64 {
 func sigmoidDerivative(x float64) float64 {
 	return x * (1 - x)
 }
+
+// 2 - ReLU
+func relu(x float64) float64 {
+	return math.Max(0, x)
+}
+
+func reluDerivative(x float64) float64 {
+	if x > 0 {
+		return 1
+	}
+	return 0
+}
+
+//Loss Functions
 
 func lossFunc(realValue float64, prediction float64) float64 {
 	return math.Pow(realValue-prediction, 2)
