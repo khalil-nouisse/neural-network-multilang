@@ -1,25 +1,25 @@
 package network
 
-// Feedforward runs the forward pass of the neural network and returns the output activations.
-func (nn *NeuralNetwork) Feedforward(inputs []float64) ([]float64, []float64) {
+// Feedforward runs the forward pass of the neural network and returns the activations
+// of ALL layers (including input) and the final prediction.
+func (nn *NeuralNetwork) Feedforward(inputs []float64) ([][]float64, []float64) {
+	activations := make([][]float64, len(nn.LayerSizes))
+	activations[0] = inputs
 
-	// Input → Hidden: dot product + bias + sigmoid
-	rawHidden := dotProduct(inputs, nn.WeightsInputHidden)
-	activatedHidden := make([]float64, len(rawHidden))
+	currentActivation := inputs
 
-	for i := range rawHidden {
-		z := rawHidden[i] + nn.BiasHidden[i][0]
-		activatedHidden[i] = sigmoid(z)
+	for l := 0; l < len(nn.Weights); l++ {
+		raw := dotProduct(currentActivation, nn.Weights[l])
+		nextActivation := make([]float64, len(raw))
+
+		for j := range raw {
+			z := raw[j] + nn.Biases[l][j][0]
+			nextActivation[j] = sigmoid(z)
+		}
+
+		activations[l+1] = nextActivation
+		currentActivation = nextActivation
 	}
 
-	// Hidden → Output: dot product + bias + sigmoid
-	rawOutput := dotProduct(activatedHidden, nn.WeightsHiddenOutput)
-	activatedOutput := make([]float64, len(rawOutput))
-
-	for i := range rawOutput {
-		a := rawOutput[i] + nn.BiasOutput[i][0]
-		activatedOutput[i] = sigmoid(a)
-	}
-
-	return activatedHidden, activatedOutput
+	return activations, currentActivation
 }

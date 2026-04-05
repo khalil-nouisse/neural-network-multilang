@@ -6,36 +6,36 @@ import (
 )
 
 type NeuralNetwork struct {
-	InputNodes  int
-	OutputNodes int
-	HiddenNodes int
+	LayerSizes []int
 
-	WeightsInputHidden  [][]float64
-	WeightsHiddenOutput [][]float64
+	// Weights[l] are weights from layer l to l+1
+	Weights [][][]float64
 
-	BiasHidden [][]float64
-	BiasOutput [][]float64
+	// Biases[l] are biases for layer l+1
+	Biases [][][]float64
 
 	LearningRate float64
 }
 
-func NewNetwork(inputs, hidden, outputs int, learningRate float64) *NeuralNetwork {
+func NewNetwork(layerSizes []int, learningRate float64) *NeuralNetwork {
 	rand.Seed(time.Now().UnixNano())
 
-	return &NeuralNetwork{
-		InputNodes:  inputs,
-		OutputNodes: outputs,
-		HiddenNodes: hidden,
+	numLayers := len(layerSizes)
 
-		WeightsInputHidden:  randomMatrix(inputs, hidden),
-		WeightsHiddenOutput: randomMatrix(hidden, outputs),
+	weights := make([][][]float64, numLayers-1)
+	biases := make([][][]float64, numLayers-1)
 
-		BiasHidden: randomMatrix(hidden, 1),
-		BiasOutput: randomMatrix(outputs, 1),
-
-		LearningRate: learningRate,
+	for i := 0; i < numLayers-1; i++ {
+		weights[i] = randomMatrix(layerSizes[i], layerSizes[i+1])
+		biases[i] = randomMatrix(layerSizes[i+1], 1)
 	}
 
+	return &NeuralNetwork{
+		LayerSizes:   layerSizes,
+		Weights:      weights,
+		Biases:       biases,
+		LearningRate: learningRate,
+	}
 }
 
 func randomMatrix(rows, cols int) [][]float64 {

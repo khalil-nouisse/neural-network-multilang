@@ -6,8 +6,8 @@ import (
 )
 
 func main() {
-	// 3 inputs (Req/s, Queue, CPU%), 4 hidden nodes, 1 output node
-	nn := network.NewNetwork(3, 4, 1, 0.1)
+	// 3 inputs (Req/s, Queue, CPU%), two hidden layers of 4, 1 output node
+	nn := network.NewNetwork([]int{3, 4, 4, 1}, 0.1)
 
 	// Training Data (Mock system metrics)
 	// Input: {Req/s, Queue, CPU%} | Target: {Spike Probability}
